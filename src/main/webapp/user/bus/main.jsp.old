@@ -1,0 +1,250 @@
+<%@ page contentType="text/html;charset=gb2312"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>	<html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>	<html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]> <html class="no-js ie9" lang="en"> <!-->
+<html lang="en">
+<!--<![endif]-->
+<head>
+<!-- Set the viewport width to device width for mobile -->
+<meta name="viewport" content="width=device-width" />
+<title>主页</title>
+
+<s:include value="/jsps/common/head.jsp" />
+
+</head>
+<body>
+	<header id="brand">
+		<div class="container">
+			<div class="row">
+				<div class="appname hide-on-phones">客户跟踪助手</div>
+			</div>
+		</div>
+	</header>
+	<section class="mainbg">
+		<div class="container">
+			<div class="row">
+				<div class="content"></div>
+			</div>
+			<div class="row">
+				<div class="app-wrapper ui-corner-top">
+					<div class="blue module ui-corner-top clearfix">
+						<h2>搜索</h2>
+					</div>
+					<div class="content">
+						<div class="row">
+							<div class="three columns">
+								<label for="area">区域</label> <input type="text" id="area"
+									name="area">
+							</div>
+							<div class="three columns">
+								<label for="star">星级</label> <input type="text" id="star"
+									name="star">
+							</div>
+							<div class="three columns">
+								<br> <label for="start">已经追踪过 <input class="radio"
+									type="radio" id="statusWorked" name="status">
+								</label> <label for="start">未开发 <input class="radio"
+									type="radio" id="statusNotWorked" name="status">
+								</label>
+							</div>
+							<div class="three columns">
+								<br> <input class="small blue button" type="submit"
+									name="searchCompany">
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="app-wrapper ui-corner-top">
+					<div class="blue module ui-corner-top clearfix">
+						<h2>客户列表</h2>
+					</div>
+					<div class="content">
+						<table class="dataTable">
+							<thead>
+								<tr>
+									<th>公司</th>
+									<th>联系人</th>
+									<th>联系电话</th>
+									<th>邮箱</th>
+									<th>地址</th>
+									<th>热度</th>
+									<th>追踪进度</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>克拉伦斯</td>
+									<td>刘建霞</td>
+									<td>138-8888-8888</td>
+									<td>liujianxia@big.com</td>
+									<td>长宁路1888号帝国大厦88楼</td>
+									<td>5星</td>
+									<td>初次联系</td>
+								</tr>
+								<tr>
+									<td>克拉伦斯</td>
+									<td>刘建霞</td>
+									<td>138-8888-8888</td>
+									<td>liujianxia@big.com</td>
+									<td>长宁路1888号帝国大厦88楼</td>
+									<td>5星</td>
+									<td>初次联系</td>
+								</tr>
+								<tr>
+									<td>克拉伦斯</td>
+									<td>刘建霞</td>
+									<td>138-8888-8888</td>
+									<td>liujianxia@big.com</td>
+									<td>长宁路1888号帝国大厦88楼</td>
+									<td>5星</td>
+									<td>初次联系</td>
+								</tr>
+								<tr>
+									<td>克拉伦斯</td>
+									<td>刘建霞</td>
+									<td>138-8888-8888</td>
+									<td>liujianxia@big.com</td>
+									<td>长宁路1888号帝国大厦88楼</td>
+									<td>5星</td>
+									<td>初次联系</td>
+								</tr>
+								<tr>
+									<td>克拉伦斯</td>
+									<td>刘建霞</td>
+									<td>138-8888-8888</td>
+									<td>liujianxia@big.com</td>
+									<td>长宁路1888号帝国大厦88楼</td>
+									<td>5星</td>
+									<td>初次联系</td>
+								</tr>
+								<tr>
+									<td>克拉伦斯</td>
+									<td>刘建霞</td>
+									<td>138-8888-8888</td>
+									<td>liujianxia@big.com</td>
+									<td>长宁路1888号帝国大厦88楼</td>
+									<td>5星</td>
+									<td>初次联系</td>
+								</tr><tr>
+									<td>克拉伦斯</td>
+									<td>刘建霞</td>
+									<td>138-8888-8888</td>
+									<td>liujianxia@big.com</td>
+									<td>长宁路1888号帝国大厦88楼</td>
+									<td>5星</td>
+									<td>初次联系</td>
+								</tr><tr>
+									<td>克拉伦斯</td>
+									<td>刘建霞</td>
+									<td>138-8888-8888</td>
+									<td>liujianxia@big.com</td>
+									<td>长宁路1888号帝国大厦88楼</td>
+									<td>5星</td>
+									<td>初次联系</td>
+								</tr><tr>
+									<td>克拉伦斯</td>
+									<td>刘建霞</td>
+									<td>138-8888-8888</td>
+									<td>liujianxia@big.com</td>
+									<td>长宁路1888号帝国大厦88楼</td>
+									<td>5星</td>
+									<td>初次联系</td>
+								</tr><tr>
+									<td>克拉伦斯</td>
+									<td>刘建霞</td>
+									<td>138-8888-8888</td>
+									<td>liujianxia@big.com</td>
+									<td>长宁路1888号帝国大厦88楼</td>
+									<td>5星</td>
+									<td>初次联系</td>
+								</tr><tr>
+									<td>克拉伦斯</td>
+									<td>刘建霞</td>
+									<td>138-8888-8888</td>
+									<td>liujianxia@big.com</td>
+									<td>长宁路1888号帝国大厦88楼</td>
+									<td>5星</td>
+									<td>初次联系</td>
+								</tr><tr>
+									<td>克拉伦斯</td>
+									<td>刘建霞</td>
+									<td>138-8888-8888</td>
+									<td>liujianxia@big.com</td>
+									<td>长宁路1888号帝国大厦88楼</td>
+									<td>5星</td>
+									<td>初次联系</td>
+								</tr><tr>
+									<td>克拉伦斯</td>
+									<td>刘建霞</td>
+									<td>138-8888-8888</td>
+									<td>liujianxia@big.com</td>
+									<td>长宁路1888号帝国大厦88楼</td>
+									<td>5星</td>
+									<td>初次联系</td>
+								</tr><tr>
+									<td>克拉伦斯</td>
+									<td>刘建霞</td>
+									<td>138-8888-8888</td>
+									<td>liujianxia@big.com</td>
+									<td>长宁路1888号帝国大厦88楼</td>
+									<td>5星</td>
+									<td>初次联系</td>
+								</tr><tr>
+									<td>克拉伦斯</td>
+									<td>刘建霞</td>
+									<td>138-8888-8888</td>
+									<td>liujianxia@big.com</td>
+									<td>长宁路1888号帝国大厦88楼</td>
+									<td>5星</td>
+									<td>初次联系</td>
+								</tr><tr>
+									<td>克拉伦斯</td>
+									<td>刘建霞</td>
+									<td>138-8888-8888</td>
+									<td>liujianxia@big.com</td>
+									<td>长宁路1888号帝国大厦88楼</td>
+									<td>5星</td>
+									<td>初次联系</td>
+								</tr><tr>
+									<td>克拉伦斯</td>
+									<td>刘建霞</td>
+									<td>138-8888-8888</td>
+									<td>liujianxia@big.com</td>
+									<td>长宁路1888号帝国大厦88楼</td>
+									<td>5星</td>
+									<td>初次联系</td>
+								</tr>
+							</tbody>
+							<tfoot></tfoot>
+						</table>
+						<br>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<s:include value="/jsps/common/footer.jsp" />
+
+	<script>
+		$(document).ready(function() {
+
+			var userModel = function() {
+
+				var self = this;
+
+				self.login = function() {
+				};
+				self.doLogin = function() {
+				};
+			};
+
+			ko.applyBindings(new userModel());
+		});
+	</script>
+</body>
+</html>

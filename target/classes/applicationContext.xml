@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="  
+    http://www.springframework.org/schema/beans   
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+    http://www.springframework.org/schema/context  
+    http://www.springframework.org/schema/context/spring-context-3.0.xsd  
+    http://www.springframework.org/schema/data/jpa 
+    http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+    http://www.springframework.org/schema/mvc  
+    http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd 
+    http://www.springframework.org/schema/tx 
+    http://www.springframework.org/schema/tx/spring-tx-3.0.xsd 
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-3.0.xsd  ">
+	<!-- 启动spring的注解功能 
+	<context:annotation-config />
+	-->
+	<!--激活spring的自动扫描功能
+	<context:component-scan base-package="com.meirong" />
+	 -->
+	
+	<!-- Customized Property Placeholder -->
+	<bean id="customizedPropholder" class="com.meirong.util.CustomizedPropertyConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:ls.properties</value>
+				<value>classpath:menu.properties</value>
+				<value>classpath:db_server.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 定义实体管理器工厂 -->
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="persistenceUnitName" value="lsJPA" />
+	</bean>
+
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<!-- 指定数据库属性文件 
+	<context:property-placeholder location="classpath:db_server.properties" />
+	-->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${db.driverClass}" />
+		<property name="url" value="${db.jdbcUrl}" />
+		<property name="username" value="${db.username}" />
+		<property name="password" value="${db.password}" />
+	</bean>
+
+	<!-- 启用 annotation事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<!-- 配置Spring Data JPA扫描目录 -->
+	<!-- 自己订制自己的Repository，还可以在自己的Repository里面添加自己使用的公共方法, 当然更灵活的是自己写一个实现类，来实现自己需要的方法 
+		,做如下配置可以定义xxxRepositoryImpl,jpa可以扫描到 -->
+	<jpa:repositories base-package="com.meirong.repository" repository-impl-postfix="Impl" entity-manager-factory-ref="entityManagerFactory" transaction-manager-ref="transactionManager" />
+
+	<bean name="schedulerJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="com.meirong.jobs.TestJob" />
+	</bean>
+	
+	<bean name="grabFeJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="com.meirong.jobs.GrabFeJob" />
+	</bean>
+
+	<!-- Cron Trigger, run every 10 seconds -->
+	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="schedulerJob" />
+		<property name="cronExpression" value="0/10 * * * * ?" />
+	</bean>
+	
+	<bean id="grabFeJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="grabFeJob" />
+		<property name="cronExpression" value="0/10 * * * * ?" />
+	</bean>
+	
+	<!-- DI -->
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="jobDetails">
+			<list>
+				<ref bean="schedulerJob" />
+				<ref bean="grabFeJob" />
+			</list>
+		</property>
+		<property name="triggers">
+			<list>
+				<!-- 
+				<ref bean="cronTrigger" />
+				<ref bean="grabFeJobTrigger"/>
+				 -->
+			</list>
+		</property>
+	</bean>
+
+</beans>
