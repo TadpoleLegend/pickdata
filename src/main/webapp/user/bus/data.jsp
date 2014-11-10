@@ -238,8 +238,8 @@
 	</section>
 
 	<%@ include file="/jsps/common/footer.jsp"%>
-	<script src="/ls/js/list.js"></script>
-	<script src="/ls/js/jquery.raty.js"></script>
+	<script src="/pickdata/js/list.js"></script>
+	<script src="/pickdata/js/jquery.raty.js"></script>
 	<script>
 		$(document).ready( function() {
 			
@@ -320,7 +320,7 @@
 							self.searchCompany();
 							
 							$.ajax({
-								url : '/ls/findAllProblems.ls',
+								url : '/findAllProblems.ls',
 								success : function(data) {
 									
 									$.each(data, function(index, value) {
@@ -332,7 +332,7 @@
 							});
 							
 							$.ajax({
-								url : '/ls/findAllProvinces.ls',
+								url : '/findAllProvinces.ls',
 								success : function(data) {
 									
 									$.each(data, function(index, value) {
@@ -374,7 +374,7 @@
 						self.searchCompany = function() {
 							
 							$.ajax({
-								url : '/ls/user/loadCompanyInPage.ls',
+								url : 'loadCompanyInPage.ls',
 								data : {pageNumber : self.currentIndex(), 
 										starInput : self.starInput(), 
 										searchDistinct: self.searchDistinct(),
@@ -395,8 +395,8 @@
 							self.companyList.removeAll();
 
 							$.each(data.elements, function(index, value) {
-								var new_phone_src = "/ls/img/" + value.phoneSrc;
-								var new_email_src = "/ls/img/" + value.emailSrc;
+								var new_phone_src = "/pickdata/img/" + value.phoneSrc;
+								var new_email_src = "/pickdata/img/" + value.emailSrc;
 								
 								var problems = new Array();
 								

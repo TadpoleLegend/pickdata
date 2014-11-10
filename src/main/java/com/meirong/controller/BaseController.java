@@ -22,10 +22,6 @@ public class BaseController {
 	private UserService userService;
 	
 	
-	@RequestMapping(value = Constants.SLASH + ServletPathConstants.INDEX)
-	public String index(HttpServletRequest request,HttpServletResponse response, Model model){
-		return "login";
-	}
 	
 	
 	
@@ -48,63 +44,5 @@ public class BaseController {
 			return "login";
 		}
 		return "index";
-	}
-
-	@RequestMapping(value = Constants.SLASH + ServletPathConstants.POINT_INDEX)
-	public String point_index(HttpServletRequest request,HttpServletResponse response, Model model){
-		return "shouyinjiangkong/center";
-	}
-	
-	@RequestMapping(value = Constants.SLASH + ServletPathConstants.CARD_INDEX)
-	public String card_index(HttpServletRequest request,HttpServletResponse response, Model model){
-		return "kapianjiangkong/center";
-	}
-	
-	
-	@RequestMapping(value = Constants.SLASH + ServletPathConstants.OPENBOX_INDEX)
-	public String openbox_index(HttpServletRequest request,HttpServletResponse response, Model model){
-		return "kaixiangjiangkong/index";
-	}
-	
-	@RequestMapping(value = Constants.SLASH + ServletPathConstants.COINBOX_INDEX)
-	public String coinbox_index(HttpServletRequest request,HttpServletResponse response, Model model){
-		return "coinboxjiangkong/main";
-	}
-	
-	@RequestMapping(value = Constants.SLASH + ServletPathConstants.STATION_INDEX)
-	public String station_index(HttpServletRequest request,HttpServletResponse response, Model model){
-		request.getSession().removeAttribute(Constants.defaultFleetNo_session);
-		request.getSession().removeAttribute(Constants.station_url);
-		request.getSession().removeAttribute(Constants.station_fleets);
-		request.getSession().removeAttribute(Constants.station_car);
-		return "stationjiangkong/main";
-	}
-	
-	
-	@RequestMapping(value = Constants.SLASH + ServletPathConstants.SYS_CONFIG)
-	public String sys_config(HttpServletRequest request,HttpServletResponse response, Model model){
-		 return "sys/main";
-	}
-	
-	@RequestMapping(value = Constants.SLASH + ServletPathConstants.USER_CONFIG)
-	public String user_config(HttpServletRequest request,HttpServletResponse response, Model model){
-		 return "user/main";
-	}
-	
-	
-	@RequestMapping(value = Constants.SLASH + ServletPathConstants.LOGOUT)
-	public String logout(HttpServletRequest request,HttpServletResponse response, Model model){
-		HttpSession session = request.getSession();
-		session.removeAttribute(Constants.SESSION_ACCOUNT_KEY);
-		session.removeAttribute(Constants.site_map);
-		session.removeAttribute(Constants.openbox_opt_session);
-		session.removeAttribute(Constants.user_menus);
-		session.removeAttribute(Constants.coinbox_session);
-		session.removeAttribute(Constants.station_opt_session);
-		session.removeAttribute(Constants.defaultFleetNo_session);
-		session.removeAttribute(Constants.station_url);
-		session.removeAttribute(Constants.station_fleets);
-		session.removeAttribute(Constants.station_car);
-		return "login";
 	}
 }
