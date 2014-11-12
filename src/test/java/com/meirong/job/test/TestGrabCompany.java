@@ -24,8 +24,6 @@ import com.meirong.util.HttpClientGrabUtil;
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
 public class TestGrabCompany {
 
-	private File file = new File("D:\\Jerry\\58.txt");
-
 	@Autowired
 	private CompanyRepository companyRepository;
 	
@@ -38,24 +36,12 @@ public class TestGrabCompany {
 	@Autowired
 	private ProvinceRepository provinceRepository;
 	
-	@Autowired
-	private GrabService grabService;
-	
 	@Test
 	public void testGanjiCompanyList() throws Exception{
 		String testURL = "http://sh.ganji.com/meirongshi/";
 		String htmlForPage = HttpClientGrabUtil.fetchHTMLwithURL(testURL);
-		File file = new File("wholePagedcompanyList.html");
-		if (!file.exists()) {
-			file.createNewFile();
-		}
 		
-		FileWriter fileWriter = new FileWriter(file);
-		fileWriter.write(htmlForPage);
-		fileWriter.close();
-		
-		
-		List<Company> companiesInThisPage = HtmlParserUtilForGanJi.findPagedCompanyList(htmlForPage);
+		List<Company> companiesInThisPage = HtmlParserUtilForGanJi.getInstance().findPagedCompanyList(htmlForPage);
 		Assert.assertTrue(!companiesInThisPage.isEmpty());
 
 		for (Company company : companiesInThisPage) {

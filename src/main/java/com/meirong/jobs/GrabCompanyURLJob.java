@@ -53,7 +53,7 @@ public class GrabCompanyURLJob extends QuartzJobBean {
 		
 		String htmlForPage = HttpClientGrabUtil.fetchHTMLwithURL(testURL);
 		
-		List<Company> companiesInThisPage = HtmlParserUtilPlanB.findPagedCompanyList(htmlForPage);
+		List<Company> companiesInThisPage = HtmlParserUtilPlanB.getInstance().findPagedCompanyList(htmlForPage);
 		
 		//<input id="pagenum" value="C29C0040637C187E41C97E412398A6D8A" type="hidden" />
 		for (Company company : companiesInThisPage) {
@@ -64,10 +64,10 @@ public class GrabCompanyURLJob extends QuartzJobBean {
 		//	String companyName = HtmlParserUtilPlanB.findCompanyName(detailPageHtml);
 		//	company.setName(companyName);
 			
-			String contactor = HtmlParserUtilPlanB.findContactorName(detailPageHtml);
+			String contactor = HtmlParserUtilPlanB.getInstance().findContactorName(detailPageHtml);
 			company.setContactor(contactor);
 			
-			String phoneImgSrc = HtmlParserUtilPlanB.findContactorPhoneNumberImgSrc(detailPageHtml);
+			String phoneImgSrc = HtmlParserUtilPlanB.getInstance().findContactorPhoneNumberImgSrc(detailPageHtml);
 			company.setPhoneSrc(phoneImgSrc);
 			
 			String imgFileNameAfterGrabed = GrapImgUtil.grabImgWithSrc(phoneImgSrc);

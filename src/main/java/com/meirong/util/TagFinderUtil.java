@@ -26,11 +26,11 @@ public class TagFinderUtil {
 		return find;
 	}
 	
-	public static boolean findGanjiCompany(Tag tag) {
-		
-		boolean find = tag.getTagName().equalsIgnoreCase("dd") && "company".equals(tag.getAttribute("class"));
-		
-		return find;
-	}
+	public static boolean findCompanyForGanji(Tag tag) {
+			
+			boolean find = tag.getTagName().equalsIgnoreCase("dd") && "company".equals(tag.getAttribute("class"));
+			
+			return find;
+		}
 
 }

@@ -8,7 +8,6 @@ import org.htmlparser.Node;
 import org.htmlparser.NodeFilter;
 import org.htmlparser.Parser;
 import org.htmlparser.Tag;
-import org.htmlparser.nodes.TagNode;
 import org.htmlparser.tags.DefinitionList;
 import org.htmlparser.tags.DefinitionListBullet;
 import org.htmlparser.tags.Div;
@@ -25,36 +24,20 @@ import com.meirong.entity.City;
 import com.meirong.entity.Company;
 import com.meirong.entity.Province;
 
-public class HtmlParserUtilPlanB {
-
-	public static Div findFirstOneWithClassName(String html, final String className) {
-		Node[] nodes = null;
-		try {
-			Parser htmlParser = new Parser();
-			htmlParser.setInputHTML(html);
+public class HtmlParserUtilPlanB extends BaseHtmlParseUtil{
+	private static HtmlParserUtilPlanB htmlParserUtilPlanB;
+	private HtmlParserUtilPlanB(){}
+	public static HtmlParserUtilPlanB getInstance(){
+		if(htmlParserUtilPlanB == null){
+			return new HtmlParserUtilPlanB();
+		}else{
 			
-			nodes = htmlParser.extractAllNodesThatMatch(new NodeFilter() {
-				
-				public boolean accept(Node node) {
-					if (node instanceof Div && StringUtils.isNotBlank(((Div) node).getAttribute("class")) && ((Div) node).getAttribute("class").equalsIgnoreCase(className)) {
-						return true;
-					}
-					return false;
-				}
-			}).toNodeArray();
-			
-		} catch (ParserException e) {
-			return null;
+			return htmlParserUtilPlanB;
 		}
 		
-		if (nodes != null && nodes.length > 0) {
-			return (Div) nodes[0];
-		}
-		
-		return null;
 	}
 	
-	public static List<Company> findPagedCompanyList(String wholeCityPageHTML) {
+	public List<Company> findPagedCompanyList(String wholeCityPageHTML) {
 
 		final List<Company> companyList = new ArrayList<Company>();
 
@@ -152,7 +135,7 @@ public class HtmlParserUtilPlanB {
 		return comanyName.toString();
 	}
 
-	public static String findContactorPhoneNumberImgSrc(String detailPageHtml) {
+	public String findContactorPhoneNumberImgSrc(String detailPageHtml) {
 
 		final StringBuilder contactorsPhoneImgSrcBuilder = new StringBuilder();
 
@@ -223,7 +206,7 @@ public class HtmlParserUtilPlanB {
 
 	}
 
-	public static String findContactorEmailImgSrc(String detailPageHtml) {
+	public String findContactorEmailImgSrc(String detailPageHtml) {
 
 		final StringBuilder contactorsEmailSrcBuilder = new StringBuilder();
 
@@ -364,7 +347,7 @@ public class HtmlParserUtilPlanB {
 
 	}
 
-	public static String findContactorName(String detailPageHtml) {
+	public String findContactorName(String detailPageHtml) {
 		final StringBuilder contactorsBuilder = new StringBuilder();
 
 		try {
@@ -421,44 +404,8 @@ public class HtmlParserUtilPlanB {
 		return contactorsBuilder.toString();
 	}
 
-	public static Node findNodeById(String html, final String divId) {
 
-		try {
-
-			Parser htmlParser = new Parser();
-			htmlParser.setInputHTML(html);
-
-			Node[] nodes = htmlParser.extractAllNodesThatMatch(new NodeFilter() {
-
-				public boolean accept(Node node) {
-
-					if (node instanceof TagNode) {
-						TagNode tag = (TagNode) node;
-
-						String id = StringUtils.trimToEmpty(tag.getAttribute("id"));
-
-						if (StringUtils.isNotBlank(id) && divId.equals(id)) {
-							return true;
-						}
-					}
-					return false;
-				}
-			}).toNodeArray();
-
-			if (null != nodes && nodes.length > 0) {
-				Node foundNode = nodes[0];
-				return foundNode;
-			}
-
-		} catch (ParserException e) {
-
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static String findCompanyAddress(String detailPageHtml) {
+	public String findCompanyAddress(String detailPageHtml) {
 
 		final StringBuilder address = new StringBuilder();
 
@@ -530,7 +477,7 @@ public class HtmlParserUtilPlanB {
 	
 	}
 	
-	public static String findCompanyEmployeeCount(String detailPageHtml) {
+	public String findCompanyEmployeeCount(String detailPageHtml) {
 		final StringBuilder description = new StringBuilder();
 		
 		try {
@@ -587,7 +534,7 @@ public class HtmlParserUtilPlanB {
 		return description.toString();
 	}
 	
-	public static String findCompanyDescription(String html) {
+	public String findCompanyDescription(String html) {
 		Div descriptionDiv = findFirstOneWithClassName(html, "compIntro");
 		
 		return descriptionDiv == null ? "" : descriptionDiv.getStringText();

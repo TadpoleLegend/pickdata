@@ -72,7 +72,7 @@ public class GrabServiceImpl implements GrabService {
 				String pagedCompanyURLWithPageNumber = pagedCompanyURL + i;
 				String pagedCompanyHTML = HttpClientGrabUtil.fetchHTMLwithURL(pagedCompanyURLWithPageNumber);
 				
-				List<Company> companies = HtmlParserUtilPlanB.findPagedCompanyList(pagedCompanyHTML);
+				List<Company> companies = HtmlParserUtilPlanB.getInstance().findPagedCompanyList(pagedCompanyHTML);
 				
 				for (Company company : companies) {
 					
@@ -104,7 +104,7 @@ public class GrabServiceImpl implements GrabService {
 		
 		String pagedCompanyHTML = HttpClientGrabUtil.fetchHTMLwithURL(indexPageURL);
 		
-		List<Company> companies = HtmlParserUtilPlanB.findPagedCompanyList(pagedCompanyHTML);
+		List<Company> companies = HtmlParserUtilPlanB.getInstance().findPagedCompanyList(pagedCompanyHTML);
 		
 		return companies;
 	}
@@ -121,7 +121,7 @@ public class GrabServiceImpl implements GrabService {
 	}
 
 	/**
-	 * 只抓10分钟,悠着�?
+	 * 只抓10分钟,悠着�?
 	 */
 	public GrabStatistic grabCompanyInformationByUrl(String url, Date publishDateEnd) {
 		long start = System.currentTimeMillis();
@@ -141,7 +141,7 @@ public class GrabServiceImpl implements GrabService {
 			
 			String html = HttpClientGrabUtil.fetchHTMLwithURL(pageURL);
 			
-			List<Company> basicCompany = HtmlParserUtilPlanB.findPagedCompanyList(html);
+			List<Company> basicCompany = HtmlParserUtilPlanB.getInstance().findPagedCompanyList(html);
 			List<City> citys = cityRepository.findByUrl(url);
 			City myCity = citys.get(0);
 			for (Company company : basicCompany) {
@@ -155,13 +155,13 @@ public class GrabServiceImpl implements GrabService {
 						String companyDetailUrl = company.getfEurl();
 						String detailPageHtml = HttpClientGrabUtil.fetchHTMLwithURL(companyDetailUrl);
 
-						String contactor = HtmlParserUtilPlanB.findContactorName(detailPageHtml);
+						String contactor = HtmlParserUtilPlanB.getInstance().findContactorName(detailPageHtml);
 						company.setContactor(contactor);
 
-						String phoneImgSrc = HtmlParserUtilPlanB.findContactorPhoneNumberImgSrc(detailPageHtml);
+						String phoneImgSrc = HtmlParserUtilPlanB.getInstance().findContactorPhoneNumberImgSrc(detailPageHtml);
 						company.setPhoneImgSrc(phoneImgSrc);
 						
-						String address = HtmlParserUtilPlanB.findCompanyAddress(detailPageHtml);
+						String address = HtmlParserUtilPlanB.getInstance().findCompanyAddress(detailPageHtml);
 						company.setAddress(address);
 						
 						if (StringUtils.isNotBlank(phoneImgSrc)) {
@@ -169,7 +169,7 @@ public class GrabServiceImpl implements GrabService {
 							company.setPhoneSrc(imgFileNameAfterGrabed);
 						}
 						
-						String emailImgSrc = HtmlParserUtilPlanB.findContactorEmailImgSrc(detailPageHtml);
+						String emailImgSrc = HtmlParserUtilPlanB.getInstance().findContactorEmailImgSrc(detailPageHtml);
 						company.setEmailSrc(emailImgSrc);
 						
 						if (StringUtils.isNotBlank(emailImgSrc)) {
