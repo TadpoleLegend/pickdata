@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.htmlparser.Node;
 import org.htmlparser.NodeFilter;
 import org.htmlparser.Parser;
+import org.htmlparser.nodes.TextNode;
 import org.htmlparser.tags.DefinitionList;
 import org.htmlparser.tags.DefinitionListBullet;
 import org.htmlparser.tags.Div;
@@ -63,13 +64,148 @@ public class LocationUtil {
 	}
 
 	public static void main(String[] args) {
-		getProvinces();
-//		String testURL = "http://www.58.com/changecity.aspx";
-//		String htmlForPage = HttpClientGrabUtil.fetchHTMLwithURL(testURL);
-//		List<Province> list = findCities(htmlForPage);
+		//find138Cities();
+		Map<String,Map<String,String>> list = find58Cities();
+		findGanjiCities(list);
 	}
+	private static String getHTML(){
+		String detailPageHtml = null;
+		InputStream is = LocationUtil.class.getClassLoader().getResourceAsStream("ganji_city.jsp");
+		StringBuffer out = new StringBuffer();
+		try {
+			byte[] b = new byte[4096];
+			for (int n; (n = is.read(b)) != -1;) {
+				out.append(new String(b, 0, n));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 
-	private static List<Map> getProvinces() {
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		try {
+			detailPageHtml = new String(out.toString().getBytes("UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return detailPageHtml;
+	}
+	
+	private static Map<String,Map<String,String>> findGanjiCities(Map<String,Map<String,String>> cities) {
+		final Map<String,Map<String,String>> province = new HashMap<String,Map<String,String>>();
+		String detailPageHtml = getHTML();
+		if(!cities.isEmpty()){
+			for(Entry<String, Map<String, String>>  et:cities.entrySet()){
+				final String provinceName = et.getKey();
+				Map<String,String> map = et.getValue();
+				final Map<String,String> provinceCities = new HashMap<String,String>();
+				for(Entry<String,String> city:map.entrySet()){
+					String [] str = city.getValue().split("58");
+					String cityStr = str[0];
+					final String city58 = cityStr.substring(cityStr.indexOf("//")+2,cityStr.length()-1);
+					final String cityName = city.getKey();
+					try {
+
+						Parser htmlParser = new Parser();
+						htmlParser.setInputHTML(detailPageHtml);
+
+						htmlParser.extractAllNodesThatMatch(new NodeFilter() {
+
+							private static final long serialVersionUID = 7680728721047912165L;
+
+							public boolean accept(Node node) {
+								
+								if (node instanceof DefinitionList ) {
+									
+									DefinitionList cityList = ((DefinitionList) node);
+										Node[] nodelist = cityList.getChildren().toNodeArray();
+										for (int i = 0; i < nodelist.length; i++) {
+											if (nodelist[i] instanceof DefinitionListBullet) {
+//													Province province = new Province();
+//													province.setName(definitionListBullet.getStringText());
+													if(nodelist[i + 1] instanceof DefinitionListBullet){
+													DefinitionListBullet subCities = (DefinitionListBullet) nodelist[i + 1];
+													
+													//Node[] cityLinks = subCities.getChildren().toNodeArray();
+													Node[] cityLinks = subCities.getChildrenAsNodeArray();
+//													List<City> cities = new ArrayList<City>();
+													
+													boolean flag = false;
+													for (int j = 0; j < cityLinks.length; j++) {
+														if (cityLinks[j] instanceof LinkTag) {
+															
+															LinkTag cityLink = (LinkTag) cityLinks[j];
+															//System.out.println(cityLink.getStringText()+"----------"+cityName);
+															//if(cityLink.getStringText().contains(cityName)||cityName.contains(cityLink.getStringText())){
+															if(cityLink.getAttribute("href").contains(city58)||cityName.contains(cityLink.getStringText())||cityLink.getStringText().contains(cityName)){
+//															System.out.println(cityLink.getStringText()+"----------"+cityName);
+//															City city = new City();
+//															city.setName(cityLink.getStringText());
+//															city.setUrl(cityLink.getAttribute("href"));
+//															city.setProvince(province);
+															provinceCities.put(cityLink.getStringText(), cityLink.getAttribute("href"));
+//															cities.add(city);
+															flag = true;
+															break;
+															}
+														}
+														
+													}
+													
+//													province.setCitys(cities);
+													province.put(provinceName, provinceCities);
+													if(flag)break;
+												}
+//													provinces.add(province);
+											}
+											
+										}
+								
+								}
+								return false;
+							}
+						});
+
+					} catch (ParserException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		
+		//for popular city
+		/*Map<String,String> shcity = new HashMap<String,String>();
+		Map<String,String> tjcity = new HashMap<String,String>();
+		Map<String,String> bjcity = new HashMap<String,String>();
+		Map<String,String> cqcity = new HashMap<String,String>();
+		shcity.put("上海", "http://sh.58.com/");
+		shcity.put("北京", "http://bj.58.com/");
+		shcity.put("天津", "http://tj.58.com/");
+		shcity.put("重庆", "http://cq.58.com/");
+		province.put("上海", shcity);
+		province.put("北京", bjcity);
+		province.put("天津", tjcity);
+		province.put("重庆", cqcity);*/
+		
+		if(!province.isEmpty()){
+			for(Entry<String, Map<String, String>>  et:province.entrySet()){
+				System.out.println(et.getKey());
+				Map<String,String> map = et.getValue();
+				for(Entry<String,String> city:map.entrySet()){
+					System.err.println(city.getKey()+" --4444---- " + city.getValue());
+				}
+			}
+		}
+		return province;
+
+	}
+	
+	
+	private static List<Map> find138Cities() {
 		List<Map> rsList = new ArrayList<Map>();
 		final Map<String,Map<String,String>> province = new HashMap<String,Map<String,String>>();
 		try {
@@ -148,8 +284,30 @@ public class LocationUtil {
 		return rsList;
 	}
 	
-	public static List<Province> findCities(final String detailPageHtml) {
-		final List<Province> provinces = new ArrayList<Province>();
+	public static Map<String,Map<String,String>> find58Cities() {
+		String detailPageHtml = null;
+		InputStream is = LocationUtil.class.getClassLoader().getResourceAsStream("58_city.jsp");
+		StringBuffer out = new StringBuffer();
+		try {
+			byte[] b = new byte[4096];
+			for (int n; (n = is.read(b)) != -1;) {
+				out.append(new String(b, 0, n));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		try {
+			detailPageHtml = new String(out.toString().getBytes("UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		final Map<String,Map<String,String>> province = new HashMap<String,Map<String,String>>();
 		try {
 
@@ -167,11 +325,9 @@ public class LocationUtil {
 						DefinitionList cityList = ((DefinitionList) node);
 						if (StringUtils.isNotBlank(cityList.getAttribute("id") ) && cityList.getAttribute("id") .equals("clist")) {
 							Node[] nodelist = cityList.getChildren().toNodeArray();
-							
 							for (int i = 0; i < nodelist.length; i++) {
 								if (nodelist[i] instanceof DefinitionListBullet) {
 									DefinitionListBullet definitionListBullet = (DefinitionListBullet) nodelist[i];
-									
 									if (definitionListBullet.getStringText().equals("山东") || 
 										definitionListBullet.getStringText().equals("江苏") ||
 										definitionListBullet.getStringText().equals("浙江") ||
@@ -211,6 +367,7 @@ public class LocationUtil {
 										Node[] cityLinks = subCities.getChildrenAsNodeArray();
 //										List<City> cities = new ArrayList<City>();
 										Map<String,String> city = new HashMap<String,String>();
+										
 										for (int j = 0; j < cityLinks.length; j++) {
 											if (cityLinks[j] instanceof LinkTag) {
 												
@@ -244,7 +401,21 @@ public class LocationUtil {
 		} catch (ParserException e) {
 			e.printStackTrace();
 		}
-		if(!province.isEmpty()){
+		//for popular city
+		Map<String,String> shcity = new HashMap<String,String>();
+		Map<String,String> tjcity = new HashMap<String,String>();
+		Map<String,String> bjcity = new HashMap<String,String>();
+		Map<String,String> cqcity = new HashMap<String,String>();
+		shcity.put("上海", "http://sh.58.com/");
+		shcity.put("北京", "http://bj.58.com/");
+		shcity.put("天津", "http://tj.58.com/");
+		shcity.put("重庆", "http://cq.58.com/");
+		province.put("上海", shcity);
+		province.put("北京", bjcity);
+		province.put("天津", tjcity);
+		province.put("重庆", cqcity);
+		
+		/*if(!province.isEmpty()){
 			for(Entry<String, Map<String, String>>  et:province.entrySet()){
 				System.out.println(et.getKey());
 				Map<String,String> map = et.getValue();
@@ -252,8 +423,8 @@ public class LocationUtil {
 					System.err.println(city.getKey()+" -- " + city.getValue());
 				}
 			}
-		}
-		return provinces;
+		}*/
+		return province;
 
 	}
 }
