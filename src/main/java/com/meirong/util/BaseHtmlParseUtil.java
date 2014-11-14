@@ -77,6 +77,42 @@ public abstract class BaseHtmlParseUtil {
 
 		return null;
 	}
+	public static Node findNodeByClassId(String html, final String divId) {
+
+		try {
+
+			Parser htmlParser = new Parser();
+			htmlParser.setInputHTML(html);
+
+			Node[] nodes = htmlParser.extractAllNodesThatMatch(new NodeFilter() {
+
+				public boolean accept(Node node) {
+
+					if (node instanceof TagNode) {
+						TagNode tag = (TagNode) node;
+
+						String id = StringUtils.trimToEmpty(tag.getAttribute("id"));
+
+						if (StringUtils.isNotBlank(id) && divId.equals(id)) {
+							return true;
+						}
+					}
+					return false;
+				}
+			}).toNodeArray();
+
+			if (null != nodes && nodes.length > 0) {
+				Node foundNode = nodes[0];
+				return foundNode;
+			}
+
+		} catch (ParserException e) {
+
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 	
 	public abstract List<Company> findPagedCompanyList(String wholeCityPageHTML);
 	public abstract String findCompanyAddress(String wholeCityPageHTML);

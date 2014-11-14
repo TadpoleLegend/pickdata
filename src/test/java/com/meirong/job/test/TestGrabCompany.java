@@ -1,7 +1,6 @@
 package com.meirong.job.test;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.text.MessageFormat;
 import java.util.List;
 
 import org.junit.Assert;
@@ -16,8 +15,7 @@ import com.meirong.repository.CompanyRepository;
 import com.meirong.repository.CompanyResourceRepository;
 import com.meirong.repository.ProblemRepository;
 import com.meirong.repository.ProvinceRepository;
-import com.meirong.service.GrabService;
-import com.meirong.util.HtmlParserUtilForGanJi;
+import com.meirong.util.HtmlParserUtilFor138;
 import com.meirong.util.HttpClientGrabUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -38,16 +36,17 @@ public class TestGrabCompany {
 	
 	@Test
 	public void testGanjiCompanyList() throws Exception{
-		String testURL = "http://sh.ganji.com/meirongshi/";
-		String htmlForPage = HttpClientGrabUtil.fetchHTMLwithURL(testURL);
+		//String testURL = "http://sh.ganji.com/meirongshi/";
+		for(int i=1;i<5;i++){
+		System.out.println("************************************************** page "+i+"***************************************begin");
+		String testURL = "http://s.138job.com/hire/{0}?keyword=&workadd=1273&keywordtype=1&position=0";
+		String htmlForPage = HttpClientGrabUtil.fetchHTMLwithURL(MessageFormat.format(testURL, i));
 		
-		List<Company> companiesInThisPage = HtmlParserUtilForGanJi.getInstance().findPagedCompanyList(htmlForPage);
-		Assert.assertTrue(!companiesInThisPage.isEmpty());
-
-		for (Company company : companiesInThisPage) {
-
-			System.out.println(company.toString());
+		List<Company> companiesInThisPage = HtmlParserUtilFor138.getInstance().findPagedCompanyList(htmlForPage);
+		System.out.println("************************************************** page "+i+"***************************************end");
 		}
+//		Assert.assertTrue(!companiesInThisPage.isEmpty());
+
 		
 	}
 	/**

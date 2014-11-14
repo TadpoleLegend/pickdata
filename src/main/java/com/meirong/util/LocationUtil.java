@@ -64,9 +64,9 @@ public class LocationUtil {
 	}
 
 	public static void main(String[] args) {
-		//find138Cities();
-		Map<String,Map<String,String>> list = find58Cities();
-		findGanjiCities(list);
+		find138Cities();
+//		Map<String,Map<String,String>> list = find58Cities();
+//		findGanjiCities(list);
 	}
 	private static String getHTML(){
 		String detailPageHtml = null;

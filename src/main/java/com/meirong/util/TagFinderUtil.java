@@ -1,6 +1,7 @@
 package com.meirong.util;
 
 import org.htmlparser.Tag;
+import org.htmlparser.tags.Span;
 
 
 public class TagFinderUtil {
@@ -31,6 +32,12 @@ public class TagFinderUtil {
 			boolean find = tag.getTagName().equalsIgnoreCase("dd") && "company".equals(tag.getAttribute("class"));
 			
 			return find;
-		}
+	}
+	public static boolean findCompanyFor138(Tag tag) {
+		
+		//boolean find = tag.getTagName().equalsIgnoreCase("span") && "company".equals(tag.getAttribute("c"));
+		boolean find = (tag instanceof Span) && "c".equals(tag.getAttribute("class"));
+		return find;
+}
 
 }
