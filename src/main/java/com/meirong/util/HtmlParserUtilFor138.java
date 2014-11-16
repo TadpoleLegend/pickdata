@@ -1,5 +1,8 @@
 package com.meirong.util;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -21,6 +24,8 @@ import org.htmlparser.tags.TableTag;
 import org.htmlparser.util.ParserException;
 import org.htmlparser.visitors.NodeVisitor;
 
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.meirong.entity.Company;
 
 public class HtmlParserUtilFor138 extends BaseHtmlParseUtil {
@@ -39,7 +44,12 @@ public class HtmlParserUtilFor138 extends BaseHtmlParseUtil {
 	public static String todayStr = sf.format(Calendar.getInstance().getTime());
 	
 	
+	@Override
 	public List<Company> findPagedCompanyList(String wholeCityPageHTML) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public List<Company> findPagedCompanyList(String wholeCityPageHTML,final WebClient webClient) {
 
 		final List<Company> companyList = new ArrayList<Company>();
 
@@ -146,11 +156,26 @@ public class HtmlParserUtilFor138 extends BaseHtmlParseUtil {
 						company.setAddress(findCompanyAddress(htmlForPage));
 						company.setDescription(findCompanyDescription(htmlForPage));
 						company.setEmployeeCount(findCompanyEmployeeCount(htmlForPage));
-						System.err.println(company.getName());
+						String testURL = company.getfEurl();
+						//findCompanyDetail(HttpClientGrabUtil.fetchHTMLwithURL(testURL),company);
+						try {
+							findCompanyDetail(webClient.getPage(testURL).getWebResponse().getContentAsString(),company);
+						} catch (FailingHttpStatusCodeException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (MalformedURLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						/*System.err.println(company.getName());
 						System.err.println(company.getArea());
 						System.err.println(company.getPublishDate());
-						System.err.println(company.getfEurl());
+						System.err.println(company.getfEurl());*/
 						companyList.add(company);
+						return;
 					}
 				}
 			};
@@ -164,12 +189,13 @@ public class HtmlParserUtilFor138 extends BaseHtmlParseUtil {
 
 		return companyList;
 	}
-	public void findCompanyDetail(String detailPageHtml,final Company company) {
+	public static void findCompanyDetail(String detailPageHtml,final Company company) {
 
 
 		final StringBuilder returnBuilder = new StringBuilder();
 
 		try {
+			System.out.println(detailPageHtml);
 			Node contactInfo = findNodeById(detailPageHtml,"contact");
 			Node companyInfo = findNodeByClassId(detailPageHtml,"companyinfo com_intr");
 			if(companyInfo instanceof Div){
@@ -178,15 +204,21 @@ public class HtmlParserUtilFor138 extends BaseHtmlParseUtil {
 			}
 			if(contactInfo instanceof Span){
 				Span contact =(Span)contactInfo;
+				System.err.println(contact.getStringText());
 				Node nodes []= contact.getChildrenAsNodeArray();
 				for(Node node:nodes){
 					if(node instanceof TableTag){
 						TableTag tableTag = (TableTag)node;
 						Node tbody = tableTag.getChild(0);
+						System.err.println(tbody.getClass().getName());
 					}
 				}
 				
 			}
+		if(companyInfo instanceof Div){
+			Div companyDiv = (Div)companyInfo;
+			System.err.println(companyDiv.getStringText());
+		}
 
 		} catch (Exception e) {
 			e.printStackTrace();

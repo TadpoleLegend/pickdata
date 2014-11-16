@@ -34,6 +34,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.SystemDefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 public class HttpClientGrabUtil {
@@ -124,8 +125,8 @@ public class HttpClientGrabUtil {
 		StringBuffer result = new StringBuffer();
 		try {
 			HttpResponse response = client.execute(request);
-
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+//			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "gb2312"));
 
 			String line = "";
 			while ((line = bufferedReader.readLine()) != null) {
@@ -139,6 +140,11 @@ public class HttpClientGrabUtil {
 			e.printStackTrace();
 		}
 
+		try {
+			return new String(result.toString().getBytes("UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		return result.toString();
 	}
 

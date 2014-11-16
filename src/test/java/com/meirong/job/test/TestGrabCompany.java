@@ -1,15 +1,23 @@
 package com.meirong.job.test;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.text.MessageFormat;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.meirong.entity.Company;
 import com.meirong.repository.CompanyRepository;
 import com.meirong.repository.CompanyResourceRepository;
@@ -34,21 +42,84 @@ public class TestGrabCompany {
 	@Autowired
 	private ProvinceRepository provinceRepository;
 	
-	@Test
+	public static void main(String []args){
+		try {
+			WebClient webClient = login138();
+			for(int i=1;i<2;i++){
+			System.out.println("************************************************** page "+i+"***************************************begin");
+			String testURL = "http://s.138job.com/hire/{0}?keyword=&workadd=1273&keywordtype=1&position=0";
+			//String htmlForPage = HttpClientGrabUtil.fetchHTMLwithURL(MessageFormat.format(testURL, i));
+			String htmlForPage = webClient.getPage(MessageFormat.format(testURL, i)).getWebResponse().getContentAsString();
+			
+			List<Company> companiesInThisPage = HtmlParserUtilFor138.getInstance().findPagedCompanyList(htmlForPage,webClient);
+			System.out.println("************************************************** page "+i+"***************************************end");
+			}
+		} catch (FailingHttpStatusCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	//@Test
 	public void testGanjiCompanyList() throws Exception{
 		//String testURL = "http://sh.ganji.com/meirongshi/";
-		for(int i=1;i<5;i++){
+		login138();
+		/*for(int i=1;i<2;i++){
 		System.out.println("************************************************** page "+i+"***************************************begin");
 		String testURL = "http://s.138job.com/hire/{0}?keyword=&workadd=1273&keywordtype=1&position=0";
 		String htmlForPage = HttpClientGrabUtil.fetchHTMLwithURL(MessageFormat.format(testURL, i));
 		
 		List<Company> companiesInThisPage = HtmlParserUtilFor138.getInstance().findPagedCompanyList(htmlForPage);
 		System.out.println("************************************************** page "+i+"***************************************end");
-		}
+		}*/
 //		Assert.assertTrue(!companiesInThisPage.isEmpty());
 
 		
 	}
+	
+	private static WebClient login138(){
+		final WebClient webClient = new WebClient(BrowserVersion.CHROME);
+		try {
+			String url = "http://cas.138mr.com/login";
+
+			webClient.getOptions().setJavaScriptEnabled(false);
+			// Get the first page
+			final HtmlPage loginPage = webClient.getPage(url);
+
+			// Get the form that we are dealing with and within that form,
+			// find the submit button and the field that we want to change.
+			final List<HtmlForm> forms = loginPage.getForms();
+
+			HtmlForm form = null;
+			for (HtmlForm singleForm : forms) {
+				if (singleForm.getAttribute("id").equals("formlogin")) {
+					form = singleForm;
+				}
+			}
+
+			final HtmlSubmitInput loginButton = form.getInputByName("btnLogin");
+			final HtmlTextInput textField = form.getInputByName("txbUserName");
+			final HtmlPasswordInput passwordField = form.getInputByName("txbUserPwd");
+
+			// Change the value of the text field
+			textField.setValueAttribute("liu_online@163.com");
+			passwordField.setValueAttribute("789321");
+			
+			// click login button
+			loginButton.click();
+			System.err.println(webClient.getPage(url).getWebResponse().getContentAsString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return webClient;
+	}
+	
 	/**
 	@Test
 	public void testGrabCompanyList() throws Exception{
